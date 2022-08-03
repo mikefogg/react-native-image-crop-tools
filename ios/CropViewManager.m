@@ -30,7 +30,7 @@ RCT_EXPORT_METHOD(saveImage:(nonnull NSNumber*) reactTag
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         RCTCropView *cropView = (RCTCropView *)viewRegistry[reactTag];
         UIImage *image = [cropView getCroppedImage];
-        CGRect *frame = [cropView getCropFrame];
+        CGRect frame = [cropView getCropFrame];
 
         NSString *extension = @"jpg";
         if ([[image valueForKey:@"hasAlpha"] boolValue] && preserveTransparency) {
@@ -53,7 +53,12 @@ RCT_EXPORT_METHOD(saveImage:(nonnull NSNumber*) reactTag
             @"uri": url.absoluteString,
             @"width": [NSNumber numberWithDouble:imageSize.width],
             @"height": [NSNumber numberWithDouble:imageSize.height],
-            @"frame": frame}
+            @"frame": @{
+                @"x": @(frame.origin.x),
+                @"y": @(frame.origin.y),
+                @"width": @(frame.size.width),
+                @"height": @(frame.size.height),
+              }}
         );
     }];
 }
@@ -65,14 +70,22 @@ RCT_EXPORT_METHOD(rotateImage:(nonnull NSNumber*) reactTag clockwise:(BOOL) cloc
     }];
 }
 
-RCT_EXPORT_METHOD(getCropFrame:(nonnull NSNumber*) reactTag) {
+RCT_EXPORT_METHOD(getCropFrame:(nonnull NSNumber*) reactTag
+    resolver:(RCTPromiseResolveBlock)resolve
+    rejecter:(RCTPromiseRejectBlock)reject)
+{
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         RCTCropView *cropView = (RCTCropView *)viewRegistry[reactTag];
-        CGRect *frame = [cropView getCropFrame];
+        CGRect frame = [cropView getCropFrame];
 
-        return @{
-            @"frame": frame
-        }
+        resolve(@{
+            @"frame": @{
+                @"x": @(frame.origin.x),
+                @"y": @(frame.origin.y),
+                @"width": @(frame.size.width),
+                @"height": @(frame.size.height),
+              }
+        });
     }];
 }
 

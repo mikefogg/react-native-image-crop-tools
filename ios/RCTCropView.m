@@ -63,7 +63,7 @@
     return [_inlineCropView.image croppedImageWithFrame:_inlineCropView.imageCropFrame angle:_inlineCropView.angle circularClip:NO];
 }
 
-- (CGRect *)getCropFrame {
+- (CGRect)getCropFrame {
     return _inlineCropView.imageCropFrame;
 }
 
