@@ -30,6 +30,7 @@ RCT_EXPORT_METHOD(saveImage:(nonnull NSNumber*) reactTag
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         RCTCropView *cropView = (RCTCropView *)viewRegistry[reactTag];
         UIImage *image = [cropView getCroppedImage];
+        CGRect *frame = [cropView getCropFrame];
 
         NSString *extension = @"jpg";
         if ([[image valueForKey:@"hasAlpha"] boolValue] && preserveTransparency) {
@@ -51,7 +52,8 @@ RCT_EXPORT_METHOD(saveImage:(nonnull NSNumber*) reactTag
         cropView.onImageSaved(@{
             @"uri": url.absoluteString,
             @"width": [NSNumber numberWithDouble:imageSize.width],
-            @"height": [NSNumber numberWithDouble:imageSize.height]}
+            @"height": [NSNumber numberWithDouble:imageSize.height],
+            @"frame": frame}
         );
     }];
 }
@@ -60,6 +62,17 @@ RCT_EXPORT_METHOD(rotateImage:(nonnull NSNumber*) reactTag clockwise:(BOOL) cloc
     [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
         RCTCropView *cropView = (RCTCropView *)viewRegistry[reactTag];
         [cropView rotateImage:clockwise];
+    }];
+}
+
+RCT_EXPORT_METHOD(getCropFrame:(nonnull NSNumber*) reactTag) {
+    [self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *,UIView *> *viewRegistry) {
+        RCTCropView *cropView = (RCTCropView *)viewRegistry[reactTag];
+        CGRect *frame = [cropView getCropFrame];
+
+        return @{
+            @"frame": frame
+        }
     }];
 }
 

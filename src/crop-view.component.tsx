@@ -49,6 +49,14 @@ class CropView extends React.PureComponent<Props> {
     );
   };
 
+  public getCropFrame = () => {
+    UIManager.dispatchViewManagerCommand(
+      findNodeHandle(this.viewRef.current!),
+      UIManager.getViewManagerConfig('CropView').Commands.getCropFrame,
+      []
+    );
+  };
+
   public render() {
     const { onImageCrop, aspectRatio, ...rest } = this.props;
 
